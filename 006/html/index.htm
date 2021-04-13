@@ -1,0 +1,142 @@
+<html>
+  <header>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"/>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+
+    <link href="index.css" rel="stylesheet" />
+  </header>
+
+  <body>
+    <div class="page-content page-container" id="page-content">
+      <div class="padding">
+        <div class="row container d-flex justify-content-center">
+          <div class="col-md-12">
+            <div class="card px-3">
+              <div class="card-body">
+                <h4 class="card-title">Todolist no Django</h4>
+                <div class="add-items d-flex">
+                  <input type="text" class="form-control todo-list-input" placeholder="O que quer fazer por hoje?" />
+                  <button class="add btn btn-primary font-weight-bold todo-list-add-btn">
+                    Add
+                  </button>
+                </div>
+                <div class="list-wrapper">
+                  <ul class="d-flex flex-column-reverse todo-list">
+
+                    <!-- item concluido -->
+                    <li class="completed">
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input id="item_21" class="checkbox" type="checkbox" checked="checked"/> Tarefa 1
+                          <i class="input-helper"></i>
+                        </label>
+                      </div>
+                      <i id="item_21" class="remove mdi mdi-close-circle-outline"></i>
+                    </li>
+
+                    <!-- item em andamento -->
+                    <li>
+                      <div class="form-check">
+                        <label class="form-check-label">
+                          <input id="item_22" class="checkbox" type="checkbox" /> Tarefa 2
+                          <i class="input-helper"></i>
+                        </label>
+                      </div>
+                      <i id="item_22" class="remove mdi mdi-close-circle-outline"></i>
+                    </li>
+
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+
+{% csrf_token %}
+<script>
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+    (function ($) {
+        "use strict";
+        $(function () {
+            var todoListItem = $(".todo-list");
+            var todoListInput = $(".todo-list-input");
+            $(".todo-list-add-btn").on("click", function (event) {
+                event.preventDefault();
+
+                var item = $(this).prevAll(".todo-list-input").val();
+                if (item) {
+                    $.ajax({
+                        url: '/api/insert/',
+                        type: 'post',
+                        dataType: 'json',
+                        data: {
+                            text: item
+                        },
+                        headers: {
+                            'X-CSRFToken': csrftoken
+                        },
+                    });
+                    todoListItem.append(
+                        '<li><div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> ' +
+                        item +
+                        ' <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i></li>'
+                    );
+                    todoListInput.val("");
+                }
+            });
+
+            todoListItem.on("change", ".checkbox", function () {
+                if ($(this).attr("checked")) {
+                    $(this).removeAttr("checked");
+                } else {
+                    $(this).attr("checked", "checked");
+                }
+
+                $(this).closest("li").toggleClass("completed");
+            });
+
+            todoListItem.on("click", ".remove", function () {
+                var item_id = $(this)[0].id;
+
+                $.ajax({
+                    url: '/api/remove/',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        id: item_id
+                    },
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                });
+
+                $(this).parent().remove();
+            });
+
+            todoListItem.on("click", ".checkbox", function() {
+                var item_id = $(this)[0].id;
+
+                $.ajax({
+                    url: '/api/check/',
+                    type: 'post',
+                    dataType: 'json',
+                    data: {
+                        id: item_id
+                    },
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                });
+            })
+        });
+    })(jQuery);
+
+</script>
+</html>
+
