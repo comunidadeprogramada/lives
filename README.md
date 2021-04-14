@@ -14,9 +14,9 @@ Aqui eu mostro como podemos criar uma aplicação simples em Django em questão 
 
 Aqui temos dois diretórios principais:
 
-- Em [006/Html](.006/html) eu deixo disponível o HTML base usado para criar este projeto.
+- Em [006/Html](../../tree/main/006/html) eu deixo disponível o HTML base usado para criar este projeto.
 
-- Em [006/Code](.006/code) eu deixo disponível todo o código em Django pronto para ser feito um deploy.
+- Em [006/Code](../../tree/main/006/code) eu deixo disponível todo o código em Django pronto para ser feito um deploy.
 
 ## Como sugerir temas?
 
